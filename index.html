@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Microsoft Windows 95</title>
+  <meta name="description" content="Simulação fiel e nostálgica do Windows 95 desenvolvida com HTML5, CSS3 e JavaScript puro.">
+
+  <!-- Folhas de Estilo -->
+  <link rel="stylesheet" href="css/win95.css">
+  <link rel="stylesheet" href="css/desktop.css">
+</head>
+<body>
+
+  <!-- Estrutura Principal da Tela -->
+  <div id="screen">
+    <!-- Área de Trabalho com camada de janelas -->
+    <div id="desktop">
+      <div id="windows-layer"></div>
+    </div>
+
+    <!-- Barra de Tarefas -->
+    <div id="taskbar">
+      <button id="start-button">
+        <span>Iniciar</span>
+      </button>
+
+      <div id="task-buttons"></div>
+
+      <div id="tray"></div>
+    </div>
+
+    <!-- Menu Iniciar -->
+    <div id="start-menu"></div>
+  </div>
+
+  <!-- =========================================================================
+       Telas de Boot / Ciclo de Energia / Desligamento
+       ========================================================================= -->
+
+  <!-- 1. Tela de Energia (Cold Boot - clique para ligar o computador e iniciar o som) -->
+  <div id="power-screen" class="fullscreen show">
+    <div class="power-btn" title="Ligar o computador">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#22ff22" stroke-width="2.5" stroke-linecap="round">
+        <path d="M12 2v10M18.36 6.64a9 9 0 1 1-12.73 0"/>
+      </svg>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="power-led blink"></div>
+      <span style="letter-spacing: 1px;">CLIQUE PARA LIGAR O COMPUTADOR</span>
+    </div>
+    <div style="font-size: 11px; color: #555;">(Ativa o som oficial do Windows 95 composto por Brian Eno)</div>
+  </div>
+
+  <!-- 2. BIOS / POST Screen -->
+  <div id="bios-screen" class="fullscreen"></div>
+
+  <!-- 3. Splash Screen Oficial do Windows 95 (Nuvens azuis + barra de progresso) -->
+  <div id="splash-screen" class="fullscreen">
+    <div class="splash-logo">
+      <img id="splash-logo-img" alt="Windows Logo" width="128" height="128">
+      <div class="splash-text">
+        <small>Microsoft&reg;</small>
+        <big>Windows<sup>95</sup></big>
+      </div>
+    </div>
+    <div class="splash-caption">Iniciando o Windows 95...</div>
+    <div class="splash-bar"></div>
+  </div>
+
+  <!-- 4. Tela "Aguarde enquanto o computador está sendo desligado..." -->
+  <div id="shutdown-wait" class="fullscreen">
+    <div class="splash-logo">
+      <img id="shutdown-logo-img" alt="Windows Logo" width="96" height="96">
+      <div class="splash-text" style="font-size: 28px;">
+        <small>Microsoft&reg;</small>
+        <big style="font-size: 42px;">Windows<sup>95</sup></big>
+      </div>
+    </div>
+    <div class="splash-caption" style="margin-top: 24px; font-size: 18px;">
+      Aguarde enquanto o computador está sendo desligado...
+    </div>
+  </div>
+
+  <!-- 5. Tela clássica "Seu computador já pode ser desligado com segurança" -->
+  <div id="safe-off" class="fullscreen">
+    <p>Seu computador já pode ser<br>desligado com segurança.</p>
+    <small>Clique em qualquer lugar para reiniciar a máquina</small>
+  </div>
+
+  <!-- =========================================================================
+       Scripts do Sistema e Aplicativos
+       ========================================================================= -->
+  <!-- Núcleo do Sistema -->
+  <script src="js/core/icons.js"></script>
+  <script src="js/core/sound.js"></script>
+  <script src="js/core/ui.js"></script>
+  <script src="js/core/wm.js"></script>
+  <script src="js/core/vfs.js"></script>
+  <script src="js/core/taskbar.js"></script>
+  <script src="js/core/desktop.js"></script>
+  <script src="js/core/system.js"></script>
+
+  <!-- Aplicativos Internos -->
+  <script src="js/apps/notepad.js"></script>
+  <script src="js/apps/paint.js"></script>
+  <script src="js/apps/calc.js"></script>
+  <script src="js/apps/minesweeper.js"></script>
+  <script src="js/apps/ie.js"></script>
+  <script src="js/apps/cdplayer.js"></script>
+  <script src="js/apps/explorer.js"></script>
+  <script src="js/apps/system_dialogs.js"></script>
+  <script src="js/apps/dos.js"></script>
+
+  <!-- Inicialização -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inserir logotipos SVG nítidos nas telas de splash
+      const splashImg = document.getElementById('splash-logo-img');
+      const shutdownImg = document.getElementById('shutdown-logo-img');
+      if (splashImg) splashImg.src = W95.Icons.get('windows_big');
+      if (shutdownImg) shutdownImg.src = W95.Icons.get('windows_big');
+
+      // Restaurar preferências salvas
+      if (localStorage.getItem('w95.gradient') === '1') {
+        document.body.classList.add('gradient-titles');
+      }
+
+      // Iniciar gerenciador do sistema
+      W95.System.init();
+    });
+  </script>
+</body>
+</html>
