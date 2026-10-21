@@ -1,0 +1,375 @@
+/* ==========================================================================
+   WIN95.CSS — Design System do Windows 95
+   --------------------------------------------------------------------------
+   Tokens de cor, chanfros 3D, controles (botões, campos, checkboxes),
+   barras de rolagem, janelas, menus e caixas de diálogo.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Fonte pixelada (MS Sans Serif bitmap, vinda do projeto 98.css - MIT)
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("../assets/fonts/ms_sans_serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("../assets/fonts/ms_sans_serif_bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* --------------------------------------------------------------------------
+   2. Tokens de design
+   -------------------------------------------------------------------------- */
+:root {
+  /* Paleta oficial */
+  --desktop: #008080;          /* Teal clássico de 1995 */
+  --face: #c0c0c0;             /* Cinza do sistema */
+  --highlight: #ffffff;        /* Luz superior/esquerda (externa) */
+  --light: #dfdfdf;            /* Luz superior/esquerda (interna) */
+  --shadow: #808080;           /* Sombra inferior/direita (interna) */
+  --dark: #000000;             /* Sombra inferior/direita (externa) */
+  --title-active: #000080;     /* Azul-marinho */
+  --title-active-text: #ffffff;
+  --title-inactive: #808080;
+  --title-inactive-text: #c0c0c0;
+  --select-bg: #000080;
+  --select-text: #ffffff;
+  --tooltip-bg: #ffffe1;
+  --window-bg: #ffffff;
+
+  /* Tipografia */
+  --font: "Pixelated MS Sans Serif", "MS Sans Serif", "Microsoft Sans Serif", Tahoma, "Segoe UI", sans-serif;
+  --font-size: 11px;
+  --font-mono: "Fixedsys", "Courier New", Courier, monospace;
+
+  /* Chanfros 3D (box-shadow em 4 camadas = borda de 2px perfeita) */
+  --bevel-raised:       /* botão / controle elevado */
+    inset -1px -1px var(--dark), inset 1px 1px var(--highlight),
+    inset -2px -2px var(--shadow), inset 2px 2px var(--light);
+  --bevel-pressed:      /* botão pressionado */
+    inset -1px -1px var(--highlight), inset 1px 1px var(--dark),
+    inset -2px -2px var(--light), inset 2px 2px var(--shadow);
+  --bevel-window:       /* moldura de janela */
+    inset -1px -1px var(--dark), inset 1px 1px var(--light),
+    inset -2px -2px var(--shadow), inset 2px 2px var(--highlight);
+  --bevel-field:        /* campo afundado (inputs, listas) */
+    inset -1px -1px var(--highlight), inset 1px 1px var(--shadow),
+    inset -2px -2px var(--light), inset 2px 2px var(--dark);
+  --bevel-status:       /* painel raso (status bar, relógio) */
+    inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+  --bevel-thin-raised:
+    inset -1px -1px var(--shadow), inset 1px 1px var(--highlight);
+
+  /* Padrão pontilhado (dithering 50%) usado em botões ativos e barras */
+  --dither: repeating-conic-gradient(var(--face) 0% 25%, var(--highlight) 0% 50%) 0 0 / 2px 2px;
+
+  --taskbar-h: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Reset e base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--font);
+  font-size: var(--font-size);
+  color: #000;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+img, canvas, .pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+button, input, select, textarea { font-family: var(--font); font-size: var(--font-size); }
+
+u.ak { text-decoration: underline; } /* letra de acesso (atalho Alt) */
+
+body.busy, body.busy * { cursor: progress !important; }
+body.dragging iframe, body.dragging canvas { pointer-events: none; }
+body.dragging, body.dragging * { user-select: none !important; }
+
+/* --------------------------------------------------------------------------
+   4. Botões
+   -------------------------------------------------------------------------- */
+.btn {
+  min-width: 75px;
+  min-height: 23px;
+  padding: 0 12px;
+  background: var(--face);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--bevel-raised);
+  color: #000;
+  outline: none;
+  position: relative;
+}
+.btn:active:not(:disabled), .btn.pressed {
+  box-shadow: var(--bevel-pressed);
+  padding-top: 2px;
+  padding-left: 14px;
+}
+/* Botão padrão (default) — borda preta extra */
+.btn.default {
+  box-shadow: inset -1px -1px var(--dark), inset 1px 1px var(--dark),
+    inset -2px -2px var(--dark), inset 2px 2px var(--highlight),
+    inset -3px -3px var(--shadow), inset 3px 3px var(--light);
+}
+.btn:focus-visible::after, .btn.default:focus::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  outline: 1px dotted #000;
+}
+.btn:disabled { color: var(--shadow); text-shadow: 1px 1px 0 var(--highlight); }
+
+/* Botões de ferramenta (planos que se elevam no hover — estilo barra de ferramentas) */
+.tool-btn {
+  background: var(--face);
+  border: none;
+  padding: 2px;
+  box-shadow: none;
+}
+.tool-btn:hover:not(:disabled) { box-shadow: var(--bevel-thin-raised); }
+.tool-btn:active:not(:disabled), .tool-btn.active { box-shadow: var(--bevel-status); }
+
+/* --------------------------------------------------------------------------
+   5. Campos de entrada
+   -------------------------------------------------------------------------- */
+.field, input[type="text"].field, textarea.field, select.field {
+  background: var(--window-bg);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--bevel-field);
+  padding: 3px 4px;
+  outline: none;
+  color: #000;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.field:disabled { background: var(--face); }
+select.field { padding: 2px 2px; height: 21px; }
+
+/* Checkbox e rádio (desenhados via CSS) */
+.check, .radio { display: inline-flex; align-items: center; gap: 6px; position: relative; }
+.check input, .radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+.check span.box {
+  width: 13px; height: 13px; background: #fff; box-shadow: var(--bevel-field); display: inline-block; position: relative;
+}
+.check input:checked + span.box::after {
+  content: ""; position: absolute; left: 3px; top: 3px; width: 7px; height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M6 0h1v3H6zM5 1h1v3H5zM4 2h1v3H4zM3 3h1v3H3zM2 4h1v3H2zM1 3h1v3H1zM0 2h1v3H0z'/%3E%3C/svg%3E") no-repeat;
+}
+.radio span.box {
+  width: 12px; height: 12px; border-radius: 50%; background: #fff; display: inline-block; position: relative;
+  box-shadow: inset 1px 1px var(--shadow), inset -1px -1px var(--highlight), inset 2px 2px var(--dark), inset -2px -2px var(--light);
+}
+.radio input:checked + span.box::after {
+  content: ""; position: absolute; left: 4px; top: 4px; width: 4px; height: 4px; background: #000; border-radius: 50%;
+}
+
+/* Grupo (fieldset) chanfrado */
+.groupbox {
+  border: none;
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), inset -2px -2px var(--shadow), inset 2px 2px var(--highlight);
+  padding: 12px 10px 10px;
+  margin: 8px 0 0;
+  position: relative;
+}
+.groupbox > legend { background: var(--face); padding: 0 3px; position: absolute; top: -6px; left: 8px; }
+
+/* Painéis */
+.sunken-panel { box-shadow: var(--bevel-field); background: #fff; }
+.status-bar { display: flex; gap: 2px; padding: 2px 0 0; }
+.status-bar > div { box-shadow: var(--bevel-status); padding: 2px 4px; flex: 1; min-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hr-etched { height: 2px; border: none; margin: 4px 0; border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--highlight); }
+
+/* Slider (range) estilo Win95 */
+input[type="range"].w95-range { -webkit-appearance: none; appearance: none; background: transparent; height: 22px; }
+input[type="range"].w95-range::-webkit-slider-runnable-track {
+  height: 4px; box-shadow: var(--bevel-field); background: var(--face);
+}
+input[type="range"].w95-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 11px; height: 21px; margin-top: -9px; background: var(--face); box-shadow: var(--bevel-raised);
+}
+input[type="range"].w95-range::-moz-range-track { height: 4px; box-shadow: var(--bevel-field); background: var(--face); }
+input[type="range"].w95-range::-moz-range-thumb { width: 11px; height: 21px; border: 0; border-radius: 0; background: var(--face); box-shadow: var(--bevel-raised); }
+input[type="range"].w95-range.vertical { writing-mode: vertical-lr; direction: rtl; width: 22px; height: 90px; }
+input[type="range"].w95-range.vertical::-webkit-slider-runnable-track { width: 4px; height: 100%; }
+input[type="range"].w95-range.vertical::-webkit-slider-thumb { width: 21px; height: 11px; margin-top: 0; margin-left: -9px; }
+
+/* --------------------------------------------------------------------------
+   6. Barras de rolagem clássicas (WebKit/Blink)
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track { background: var(--dither); }
+::-webkit-scrollbar-thumb { background: var(--face); box-shadow: var(--bevel-raised); }
+::-webkit-scrollbar-corner { background: var(--face); }
+::-webkit-scrollbar-button:single-button { display: block; width: 16px; height: 16px; background-color: var(--face); box-shadow: var(--bevel-raised); background-repeat: no-repeat; background-position: center; }
+::-webkit-scrollbar-button:single-button:active { box-shadow: var(--bevel-pressed); }
+::-webkit-scrollbar-button:single-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v1H3zM2 1h3v1H2zM1 2h5v1H1zM0 3h7v1H0z'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:single-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h7v1H0zM1 1h5v1H1zM2 2h3v1H2zM3 3h1v1H3z'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:single-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v7H3zM2 1h1v5H2zM1 2h1v3H1zM0 3h1v1H0z'/%3E%3C/svg%3E"); }
+::-webkit-scrollbar-button:single-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v7H0zM1 1h1v5H1zM2 2h1v3H2zM3 3h1v1H3z'/%3E%3C/svg%3E"); }
+
+/* --------------------------------------------------------------------------
+   7. Janelas
+   -------------------------------------------------------------------------- */
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--face);
+  box-shadow: var(--bevel-window);
+  padding: 3px;
+  min-width: 120px;
+  min-height: 60px;
+}
+.window.minimized { display: none; }
+.window.maximized { box-shadow: none; padding: 0; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; }
+.modal-block { position: absolute; inset: 0; z-index: 50; }
+
+.title-bar {
+  height: 18px;
+  flex: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 2px 0 2px;
+  background: var(--title-inactive);
+  color: var(--title-inactive-text);
+  font-weight: bold;
+}
+.window.active > .title-bar { background: var(--title-active); color: var(--title-active-text); }
+body.gradient-titles .window > .title-bar { background: linear-gradient(90deg, var(--title-inactive), #b5b5b5); }
+body.gradient-titles .window.active > .title-bar { background: linear-gradient(90deg, var(--title-active), #1084d0); }
+
+.title-icon { width: 16px; height: 16px; flex: 0 0 16px; }
+.title-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 18px; padding-left: 1px; }
+.title-buttons { display: flex; align-items: center; }
+.title-buttons button {
+  width: 16px; height: 14px; padding: 0; border: none; background-color: var(--face);
+  box-shadow: var(--bevel-raised); background-repeat: no-repeat; background-position: center 3px;
+}
+.title-buttons button:active { box-shadow: var(--bevel-pressed); background-position: 5px 4px; }
+.title-buttons button:disabled { opacity: 1; filter: none; }
+.title-buttons .tb-close { margin-left: 2px; }
+.tb-min { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='9' shape-rendering='crispEdges'%3E%3Cpath d='M0 7h6v2H0z'/%3E%3C/svg%3E"); background-position: 4px 2px !important; }
+.tb-min:active { background-position: 5px 3px !important; }
+.tb-max { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h9v2H0zM0 2h1v7H0zM8 2h1v7H8zM1 8h7v1H1z'/%3E%3C/svg%3E"); background-position: 3px 2px !important; }
+.tb-max:active { background-position: 4px 3px !important; }
+.tb-max.restore { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='9' shape-rendering='crispEdges'%3E%3Cpath d='M2 0h6v2H2zM7 2h1v4H7zM6 5h1v1H6zM2 2h1v1H2zM0 3h6v2H0zM0 5h1v4H0zM5 5h1v4H5zM1 8h4v1H1z'/%3E%3C/svg%3E"); }
+.tb-close { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v1H0zM6 0h2v1H6zM1 1h2v1H1zM5 1h2v1H5zM2 2h4v1H2zM3 3h2v1H3zM2 4h4v1H2zM1 5h2v1H1zM5 5h2v1H5zM0 6h2v1H0zM6 6h2v1H6z'/%3E%3C/svg%3E"); background-position: 4px 3px !important; }
+.tb-close:active { background-position: 5px 4px !important; }
+.title-buttons button:disabled { background-image: none; }
+.title-buttons button.hidden { display: none; }
+
+.window-body { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; margin-top: 1px; }
+
+/* Alças de redimensionamento (8 direções) */
+.rz { position: absolute; z-index: 5; }
+.rz.n { top: -3px; left: 6px; right: 6px; height: 7px; cursor: n-resize; }
+.rz.s { bottom: -3px; left: 6px; right: 6px; height: 7px; cursor: s-resize; }
+.rz.e { right: -3px; top: 6px; bottom: 6px; width: 7px; cursor: e-resize; }
+.rz.w { left: -3px; top: 6px; bottom: 6px; width: 7px; cursor: w-resize; }
+.rz.ne { top: -3px; right: -3px; width: 10px; height: 10px; cursor: ne-resize; }
+.rz.nw { top: -3px; left: -3px; width: 10px; height: 10px; cursor: nw-resize; }
+.rz.se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: se-resize; }
+.rz.sw { bottom: -3px; left: -3px; width: 10px; height: 10px; cursor: sw-resize; }
+.window.maximized .rz, .window.fixed .rz { display: none; }
+
+/* Grip de redimensionamento no canto (status bars) */
+.size-grip {
+  width: 12px; height: 12px; align-self: flex-end; flex: 0 0 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' shape-rendering='crispEdges'%3E%3Cpath d='M11 0v1h-1v1H9v1H8v1H7v1H6v1H5v1H4v1H3v1H2v1H1v1H0' stroke='%23fff'/%3E%3Cpath d='M11 1v2h-2v2H7v2H5v2H3v2H1M11 5v2h-2v2H7v2H5M11 9v2h-2' stroke='%23808080' fill='none'/%3E%3C/svg%3E") no-repeat;
+}
+
+/* Animação de minimizar/restaurar (retângulo "zoom" da barra de título) */
+.zoom-rect { position: fixed; z-index: 99999; background: var(--title-active); pointer-events: none; outline: 1px solid var(--face); }
+
+/* --------------------------------------------------------------------------
+   8. Barra de menus e menus suspensos
+   -------------------------------------------------------------------------- */
+.menu-bar { display: flex; flex: 0 0 auto; padding: 1px 0 1px; }
+.menu-bar > .mb-item { padding: 2px 6px 3px; line-height: 14px; position: relative; }
+.menu-bar > .mb-item.open { box-shadow: var(--bevel-status); padding: 3px 5px 2px 7px; }
+.menu-bar.hover-mode > .mb-item:hover:not(.open) { box-shadow: var(--bevel-thin-raised); }
+
+.popup-menu {
+  position: fixed;
+  z-index: 100000;
+  background: var(--face);
+  box-shadow: var(--bevel-window);
+  padding: 3px;
+  min-width: 150px;
+}
+.popup-menu .mi {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 4px 0 0;
+  white-space: nowrap;
+  position: relative;
+}
+.popup-menu .mi .mi-check { width: 18px; flex: 0 0 18px; display: flex; align-items: center; justify-content: center; }
+.popup-menu .mi .mi-icon { width: 16px; height: 16px; margin: 0 6px 0 4px; flex: 0 0 16px; }
+.popup-menu.has-icons .mi .mi-check { display: none; }
+.popup-menu .mi .mi-label { flex: 1; padding-right: 18px; }
+.popup-menu .mi .mi-short { padding-right: 14px; }
+.popup-menu .mi .mi-arrow { width: 10px; height: 8px; position: absolute; right: 4px; top: 5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v7H0zM1 1h1v5H1zM2 2h1v3H2zM3 3h1v1H3z'/%3E%3C/svg%3E") no-repeat right center; }
+.popup-menu .mi.hl { background: var(--select-bg); color: var(--select-text); }
+.popup-menu .mi.hl .mi-arrow { filter: invert(1); }
+.popup-menu .mi.disabled { color: var(--shadow); text-shadow: 1px 1px 0 var(--highlight); }
+.popup-menu .mi.disabled.hl { background: var(--select-bg); color: var(--shadow); text-shadow: none; }
+.popup-menu .mi.bold .mi-label { font-weight: bold; }
+.popup-menu .sep { height: 2px; margin: 3px 1px; border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--highlight); }
+.check-glyph { width: 7px; height: 7px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M6 0h1v3H6zM5 1h1v3H5zM4 2h1v3H4zM3 3h1v3H3zM2 4h1v3H2zM1 3h1v3H1zM0 2h1v3H0z'/%3E%3C/svg%3E"); }
+.mi.hl .check-glyph, .mi.hl .radio-glyph { filter: invert(1); }
+.radio-glyph { width: 6px; height: 6px; background: #000; border-radius: 50%; }
+
+/* Menu de ícones grandes (submenus do Iniciar usam ícones 16px) */
+.popup-menu.start-sub .mi { height: 20px; }
+.popup-menu.start-sub .mi .mi-label { padding-right: 24px; }
+
+/* --------------------------------------------------------------------------
+   9. Caixas de diálogo
+   -------------------------------------------------------------------------- */
+.dialog-body { padding: 12px 12px 10px; display: flex; flex-direction: column; gap: 10px; }
+.msgbox-content { display: flex; gap: 16px; align-items: flex-start; padding: 6px 4px 6px 4px; }
+.msgbox-content img { width: 32px; height: 32px; flex: 0 0 32px; }
+.msgbox-text { padding-top: 8px; line-height: 14px; white-space: pre-wrap; max-width: 380px; }
+.dialog-buttons { display: flex; justify-content: center; gap: 6px; }
+.dialog-buttons.right { justify-content: flex-end; }
+
+/* Abas (tabs) */
+.tabs { display: flex; padding-left: 2px; position: relative; z-index: 1; }
+.tab { padding: 3px 8px 3px; background: var(--face); position: relative; top: 2px;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px 0 var(--dark), inset -2px 0 var(--shadow), inset 2px 2px var(--light); }
+.tab.active { top: 0; padding-bottom: 5px; margin: 0 -2px; z-index: 2; }
+.tab-panel { box-shadow: var(--bevel-window); padding: 12px; position: relative; }
+
+/* Tooltip estilo Win95 */
+.tooltip {
+  position: fixed; z-index: 200000; background: var(--tooltip-bg); border: 1px solid #000;
+  padding: 2px 4px; white-space: nowrap; pointer-events: none;
+}
+
+/* Listas (listbox) */
+.listbox { background: #fff; box-shadow: var(--bevel-field); padding: 2px; overflow: auto; }
+.listbox .li { padding: 1px 3px; white-space: nowrap; }
+.listbox .li.sel { background: var(--select-bg); color: var(--select-text); }

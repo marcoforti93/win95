@@ -1,0 +1,297 @@
+/* ==========================================================================
+   DESKTOP.CSS — Área de trabalho, ícones, barra de tarefas, Menu Iniciar,
+   bandeja do sistema e telas de inicialização/desligamento.
+   ========================================================================== */
+
+#screen { position: fixed; inset: 0; overflow: hidden; }
+
+/* --------------------------------------------------------------------------
+   Área de trabalho
+   -------------------------------------------------------------------------- */
+#desktop {
+  position: absolute;
+  left: 0; top: 0; right: 0;
+  bottom: var(--taskbar-h);
+  background-color: var(--desktop);
+  overflow: hidden;
+}
+#desktop.wp-clouds {
+  background:
+    radial-gradient(ellipse 22% 9% at 18% 22%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 16% 7% at 26% 19%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 25% 10% at 72% 30%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 18% 8% at 62% 34%, rgba(255,255,255,.85), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 28% 10% at 40% 70%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 20% 8% at 85% 78%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 14% 6% at 8% 85%, rgba(255,255,255,.8), rgba(255,255,255,0) 70%),
+    linear-gradient(#3168d5, #6fa0f0 60%, #9cc0f5);
+}
+#desktop.wp-pattern-bricks {
+  background-color: var(--desktop);
+  background-image:
+    linear-gradient(#000 1px, transparent 1px),
+    linear-gradient(90deg, #000 1px, transparent 1px);
+  background-size: 16px 8px, 16px 16px;
+}
+#desktop.wp-pattern-weave {
+  background-color: var(--desktop);
+  background-image: repeating-conic-gradient(rgba(0,0,0,.55) 0% 25%, transparent 0% 50%);
+  background-size: 4px 4px;
+}
+
+/* Ícones da área de trabalho */
+.desk-icon {
+  position: absolute;
+  width: 75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2px;
+  outline: none;
+}
+.desk-icon .di-img {
+  width: 32px; height: 32px; position: relative;
+  background-size: 32px 32px; background-repeat: no-repeat;
+}
+/* Seleção pontilhada azul aplicada sobre o próprio ícone (máscara) */
+.desk-icon.selected .di-img::after,
+.fv-item.selected .di-img::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: repeating-conic-gradient(#000080 0% 25%, transparent 0% 50%) 0 0 / 2px 2px;
+  -webkit-mask: var(--src) center / 32px 32px no-repeat;
+  mask: var(--src) center / 32px 32px no-repeat;
+}
+/* Seta de atalho */
+.shortcut .di-img::before {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 11px; height: 11px; z-index: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' shape-rendering='crispEdges'%3E%3Crect width='11' height='11' fill='%23000'/%3E%3Crect x='1' y='1' width='9' height='9' fill='%23fff'/%3E%3Cpath d='M5 3h4v4H8V5H7v1H6v1H5v1H4V7h1V6h1V5h1V4H5z'/%3E%3C/svg%3E");
+}
+.desk-icon .di-label {
+  margin-top: 4px;
+  padding: 1px 2px;
+  color: #fff;
+  text-align: center;
+  line-height: 13px;
+  max-width: 73px;
+  word-wrap: break-word;
+  border: 1px dotted transparent;
+}
+.desk-icon.selected .di-label { background: var(--select-bg); }
+.desk-icon.focused .di-label { border-color: #ffff80; }
+.desk-icon.dragging-icon { opacity: .6; }
+
+/* Retângulo de seleção (marquee) */
+.marquee { position: absolute; outline: 1px dotted #fff; outline-offset: -1px; pointer-events: none; z-index: 2; mix-blend-mode: difference; }
+
+#windows-layer { position: absolute; inset: 0; pointer-events: none; }
+#windows-layer > .window { pointer-events: auto; }
+
+/* --------------------------------------------------------------------------
+   Barra de tarefas
+   -------------------------------------------------------------------------- */
+#taskbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--taskbar-h);
+  background: var(--face);
+  box-shadow: inset 0 1px var(--light), inset 0 2px var(--highlight);
+  display: flex;
+  align-items: center;
+  padding: 4px 2px 2px;
+  gap: 4px;
+  z-index: 50000;
+}
+
+#start-button {
+  height: 22px;
+  min-width: 54px;
+  padding: 0 4px 0 3px;
+  display: flex; align-items: center; gap: 3px;
+  font-weight: bold;
+  background: var(--face);
+  border: none;
+  box-shadow: var(--bevel-raised);
+  outline: none;
+  flex: 0 0 auto;
+}
+#start-button img { width: 16px; height: 16px; }
+#start-button.pressed { box-shadow: var(--bevel-pressed); padding: 1px 3px 0 4px; }
+#start-button.pressed span { outline: 1px dotted #000; }
+
+#task-buttons { flex: 1; display: flex; gap: 3px; min-width: 0; overflow: hidden; }
+.task-btn {
+  flex: 0 1 160px;
+  min-width: 40px;
+  height: 22px;
+  display: flex; align-items: center; gap: 3px;
+  padding: 0 4px 0 3px;
+  background: var(--face);
+  border: none;
+  box-shadow: var(--bevel-raised);
+  text-align: left;
+  outline: none;
+}
+.task-btn img { width: 16px; height: 16px; flex: 0 0 16px; }
+.task-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.task-btn.active {
+  box-shadow: var(--bevel-pressed);
+  background: var(--dither);
+  font-weight: bold;
+  padding-top: 2px;
+}
+.task-btn:active { box-shadow: var(--bevel-pressed); }
+
+#tray {
+  height: 22px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 6px 0 4px;
+  box-shadow: var(--bevel-status);
+  flex: 0 0 auto;
+}
+#tray img { width: 16px; height: 16px; }
+#tray-clock { min-width: 46px; text-align: center; padding: 0 2px; }
+
+/* Controle de volume (pop-up da bandeja) */
+.volume-popup {
+  position: fixed; z-index: 60000; background: var(--face); box-shadow: var(--bevel-window);
+  padding: 8px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 76px;
+}
+
+/* --------------------------------------------------------------------------
+   Menu Iniciar
+   -------------------------------------------------------------------------- */
+#start-menu {
+  position: absolute;
+  left: 2px;
+  bottom: calc(var(--taskbar-h) - 2px);
+  background: var(--face);
+  box-shadow: var(--bevel-window);
+  padding: 3px;
+  display: none;
+  z-index: 60000;
+}
+#start-menu.open { display: flex; }
+#start-menu .sm-banner {
+  width: 21px;
+  background: #808080;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 4px;
+}
+#start-menu .sm-banner span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  color: var(--face);
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+#start-menu .sm-banner span b { color: #fff; font-weight: normal; }
+#start-menu .sm-items { display: flex; flex-direction: column; min-width: 158px; }
+.sm-item {
+  height: 32px;
+  display: flex; align-items: center;
+  padding: 0 6px 0 2px;
+  position: relative;
+  white-space: nowrap;
+}
+.sm-item img { width: 32px; height: 32px; margin: 0 8px 0 2px; }
+.sm-item .sm-arrow { position: absolute; right: 6px; width: 4px; height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v7H0zM1 1h1v5H1zM2 2h1v3H2zM3 3h1v1H3z'/%3E%3C/svg%3E"); }
+.sm-item .sm-label { padding-right: 22px; }
+.sm-item.hl { background: var(--select-bg); color: #fff; }
+.sm-item.hl .sm-arrow { filter: invert(1); }
+.sm-sep { height: 2px; margin: 2px 2px; border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--highlight); }
+
+/* --------------------------------------------------------------------------
+   Diálogo de desligamento — escurecimento pontilhado da tela
+   -------------------------------------------------------------------------- */
+#shutdown-dim {
+  position: fixed; inset: 0; z-index: 70000;
+  background: repeating-conic-gradient(rgba(0,0,0,1) 0% 25%, transparent 0% 50%) 0 0 / 2px 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Telas de boot / desligamento
+   -------------------------------------------------------------------------- */
+.fullscreen { position: fixed; inset: 0; z-index: 90000; display: none; }
+.fullscreen.show { display: flex; }
+
+/* Tela "ligar o computador" */
+#power-screen { background: #000; align-items: center; justify-content: center; flex-direction: column; gap: 22px; color: #aaa; font-family: "Lucida Console", "Courier New", monospace; font-size: 15px; cursor: pointer; }
+#power-screen .power-btn {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #4a4a4a, #151515 70%);
+  box-shadow: 0 0 0 4px #222, 0 0 0 6px #444, 0 10px 30px rgba(0,0,0,.8), inset 0 2px 3px rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, box-shadow .3s;
+}
+#power-screen:hover .power-btn { box-shadow: 0 0 0 4px #222, 0 0 0 6px #4a4, 0 0 26px rgba(80,255,80,.35), inset 0 2px 3px rgba(255,255,255,.2); }
+#power-screen:active .power-btn { transform: scale(.94); }
+#power-screen .power-btn svg { width: 40px; height: 40px; }
+#power-screen .power-led { width: 8px; height: 8px; border-radius: 50%; background: #2a3a2a; box-shadow: inset 0 1px 2px #000; }
+#power-screen .blink { animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* BIOS / POST */
+#bios-screen { background: #000; color: #aaa; font-family: "Lucida Console", "Courier New", monospace; font-size: 16px; line-height: 19px; padding: 20px 26px; flex-direction: column; white-space: pre; }
+#bios-screen .bios-logo { position: absolute; right: 30px; top: 22px; color: #55f; font-weight: bold; text-align: right; line-height: 18px; }
+#bios-screen .hl { color: #fff; }
+
+/* Splash do Windows 95 (céu com nuvens) */
+#splash-screen, #shutdown-wait { flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+  background:
+    radial-gradient(ellipse 28% 11% at 15% 18%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 18% 8% at 26% 14%, rgba(255,255,255,.85), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 30% 12% at 80% 22%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 22% 9% at 68% 28%, rgba(255,255,255,.8), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 34% 12% at 30% 82%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 26% 10% at 82% 76%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+    radial-gradient(ellipse 14% 7% at 52% 90%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+    linear-gradient(#2c5fd0, #5d93ea 55%, #8db6f2);
+}
+.splash-logo { display: flex; align-items: center; gap: 18px; filter: drop-shadow(3px 4px 0 rgba(0,0,0,.25)); }
+.splash-logo img { width: 128px; height: 128px; }
+.splash-logo .splash-text { color: #000; font-family: Arial, Helvetica, sans-serif; line-height: 1; }
+.splash-logo .splash-text small { display: block; font-size: 22px; font-weight: bold; letter-spacing: .5px; }
+.splash-logo .splash-text big { display: block; font-size: 64px; font-weight: bold; letter-spacing: -1px; }
+.splash-logo .splash-text big sup { font-size: 64px; color: #fff; -webkit-text-stroke: 2px #000; vertical-align: baseline; margin-left: 6px; font-weight: 900; }
+.splash-caption { margin-top: 36px; font-family: Arial, Helvetica, sans-serif; font-size: 22px; color: #fff; font-weight: bold; text-shadow: 2px 2px 0 #000; }
+.splash-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; overflow: hidden; background: #000; }
+.splash-bar::before {
+  content: ""; position: absolute; inset: 0; width: 200%;
+  background: linear-gradient(90deg, #000 0%, #0040ff 10%, #6fd2ff 20%, #0040ff 30%, #000 40%, #000 50%, #0040ff 60%, #6fd2ff 70%, #0040ff 80%, #000 90%, #000 100%);
+  animation: splashbar 1.8s linear infinite;
+}
+@keyframes splashbar { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* "Seu computador já pode ser desligado com segurança" */
+#safe-off { background: #000; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; }
+#safe-off p {
+  color: #ff8000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 34px;
+  text-align: center;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: .5px;
+}
+#safe-off small { position: absolute; bottom: 24px; color: #333; font-family: var(--font); font-size: 11px; }
+
+/* Efeito CRT ao ligar */
+.crt-on { animation: crtOn .5s ease-out; }
+@keyframes crtOn {
+  0% { transform: scale(1, .004); filter: brightness(6); }
+  45% { transform: scale(1, .004); filter: brightness(6); }
+  70% { transform: scale(1, 1.02); filter: brightness(1.5); }
+  100% { transform: scale(1, 1); filter: brightness(1); }
+}
+.crt-off { animation: crtOff .45s ease-in forwards; }
+@keyframes crtOff {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  60% { transform: scale(1, .004); filter: brightness(5); }
+  100% { transform: scale(0, .004); filter: brightness(8); }
+}
